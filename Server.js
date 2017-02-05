@@ -6,6 +6,7 @@ var express = require('express'),
     natural = require("natural");
     require("wordnet-db");
     WordPOS = require('wordpos');
+    var structures = require('./structures');
 
 var final;
 aws.config.update({
@@ -71,7 +72,7 @@ function getFaceProperies(face) {
         }
         if(key == "Emotions"){
             for(emote in key){
-                if (face[key][emote] != null && face[key][emote]["Confidence"] > 70){
+                if (face[key][emote] != null && face[key][emote]["Confidence"] > 60){
                     faceProps.push(face[key][emote]["Type"]);
                 }
             }
@@ -91,6 +92,14 @@ function createComic(labels, faces, send) {
     }
     generateWordList(labelList, function(arr){
 
+        for(pos in arr){
+            for (word in arr[pos]){
+                if (arr[pos][word] == "Human" ){
+                    arr[pos].splice(word, 1);
+                }
+            }
+        }
+
         var sentenceList = [];
         for (person in faceList){
             sentenceList[person] = generateSentence(arr, faceList[person]);
@@ -99,18 +108,58 @@ function createComic(labels, faces, send) {
     });
 }
 
-function generateSentence(wordList, person){
+function getStructure(person){
     for (key in person){
         if (person[key] == "HAPPY"){
-            return "I am happy";
+            return structures.getHappyPhrases();
+        }else if (person[key] == "ANGRY"){
+            return structures.getAngryPhrases();
+        }else if (person[key] == "DISGUSTED"){
+            return structures.getDisgustedPhrases();
+        }else if (person[key] == "CALM"){
+            return structures.getCalmPhrases();
+        }else if (person[key] == "CONFUSED"){
+            return structures.getConfusedPhrases();
+        }else if (person[key] == "SURPRISED"){
+            return structures.getSurprisedPhrases();
         }
     }
-    return "I can't makeup a sentence :(";
+    return structures.getConfusedPhrases();
+}
+function generateSentence(wordList, person){
+    var phrase = getStructure(person);
+    //return wordList;
+    while (phrase.indexOf('{')!=-1){
+      if (phrase.indexOf('{noun}')!=-1){
+        numD = getRandomInt(0, (wordList['nouns'].length));
+        console.log(numD);
+        phrase = phrase.replace('{noun}',wordList['nouns'][numD]);
+      } else if (phrase.indexOf('{adj}')!=-1) {
+        numD = getRandomInt(0, (wordList['adjectives'].length));
+        console.log(numD);
+
+        phrase = phrase.replace('{adj}', wordList['adjectives'][numD]);
+      } else if (phrase.indexOf('{verb}')!=-1) {
+        numD = getRandomInt(0, (wordList['verbs'].length));
+        console.log(numD);
+
+        phrase = phrase.replace('{verb}',wordList['verbs'][numD]);
+      }
+    }
+    return phrase;
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 function generateWordList(str, fn){
     wordpos = new WordPOS();
     wordpos.getPOS(str).then(fn);
 }
+
+
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
