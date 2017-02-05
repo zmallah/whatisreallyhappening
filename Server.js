@@ -29,43 +29,87 @@ app.post('/upload', upload.single('file'), function (req, res, next) {
 
     var blob = new Buffer(req.file.buffer, 'base64');
 
-    params = {
+    paramsLabels = {
+        "Image": {
+            "Bytes": blob,
+        }
+    }
+
+    paramsFaces = {
         "Image": {
             "Bytes": blob,
         },
+        "Attributes":
+            ["ALL"]
     }
-
-    rekognition.detectLabels(params, function(err, data) {
+    var labels, faces;
+    rekognition.detectLabels(paramsLabels, function(err, respLabels) {
        if (err) console.log(err, err.stack); // an error occurred
-       else     {res.send(generateSentence(data))};           // successful response
+       else     {
+           rekognition.detectFaces(paramsFaces, function(err, respFaces) {
+              if (err) console.log(err, err.stack); // an error occurred
+              else     res.send(generateSentence(
+                            respLabels["Labels"],
+                            respFaces["FaceDetails"])
+                        );
+          });
+       }
+
    });
+
 });
-
-function generateSentence(data, callback) {
-  if (callback) return data;
-
-    var result = '';
-    for (var key in data["Labels"]) {
-            result = result + data["Labels"][key]["Name"] + " ";
+function getFaceProperies(face) {
+    var faceProps = [];
+    for (key in face) {
+        if (face[key]["Confidence"] > 90){
+            if (key == "Gender") {
+                faceProps.push(face[key]["Value"]);
+            } else if (!("Value" in face[key]) || face[key]["Value"] != false) {
+                faceProps.push(key);
+            }
+        }
+        if(key == "Emotions"){
+            for(emote in key){
+                if (face[key][emote] != null && face[key][emote]["Confidence"] > 85){
+                    faceProps.push(face[key][emote]["Type"]);
+                }
+            }
+        }
     }
-    part_of_speech(result);
+    return faceProps
+}
+
+function generateSentence(labels, faces) {
+    var labelList = [];
+    for (var key in labels) {
+        labelList.push(labels[key]["Name"]);
+    }
+    var faceList = [];
+    for (var face in faces) {
+        faceList.push(getFaceProperies(faces[face]));
+    }
+
+    var wordList = labelList;
+    for (var key in faceList) {
+        wordList = wordList.concat(faceList[key]);
+    }
+
+    for (person in faceList){
+
+    }
+    part_of_speech(wordList);
+}
+
+function part_of_speech(str){
+    wordpos = new WordPOS();
+    temp = null;
+    var posList;
+    pos = wordpos.getPOS(str, function(response){
+        posList = response;
+    });
+    return posList;
 }
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });
-
-function part_of_speech(str){
-  console.log(str);
-  wordpos = new WordPOS();
-  temp = null;
-  var test;
-  wordpos.getPOS(str, function(data){
-    console.log(data);
-    generateSentence(data,true);
-  });
-}
-
-function textReturn(str){
-
-}
