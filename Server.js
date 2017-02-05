@@ -136,16 +136,13 @@ function generateSentence(wordList, person){
     while (phrase.indexOf('{')!=-1){
       if (phrase.indexOf('{noun}')!=-1){
         numD = getRandomInt(0, (wordList['nouns'].length));
-        console.log(numD);
         phrase = phrase.replace('{noun}',wordList['nouns'][numD]);
       } else if (phrase.indexOf('{adj}')!=-1) {
         numD = getRandomInt(0, (wordList['adjectives'].length));
-        console.log(numD);
 
         phrase = phrase.replace('{adj}', wordList['adjectives'][numD]);
       } else if (phrase.indexOf('{verb}')!=-1) {
         numD = getRandomInt(0, (wordList['verbs'].length));
-        console.log(numD);
 
         phrase = phrase.replace('{verb}',wordList['verbs'][numD]);
       }
@@ -165,6 +162,6 @@ function generateWordList(str, fn){
 
 
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+app.listen(80, function () {
+    console.log('app listening on port 3000!');
 });
