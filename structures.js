@@ -16,7 +16,7 @@ module.exports = {
     return emotionArr[num];
   },
   getConfusedPhrases: function () {
-    var emotionArr = ['Wait? I though {adj} was {adj}.', "Isn't {noun} really a {noun}?", 'Why does she {verb}?'];
+    var emotionArr = ['Wait? I thought {adj} was {adj}.', "Isn't {noun} really a {noun}?", 'Why does she {verb}?'];
     num = Math.trunc(Math.random()*3);
     return emotionArr[num];
   },

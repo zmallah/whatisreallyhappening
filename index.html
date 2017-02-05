@@ -16,7 +16,10 @@
        $('#uploadForm').submit(function() {
           $(this).ajaxSubmit({
               success: function(response) {
-                  $("div#result").empty().append(JSON.stringify(response));
+                  $("#result").empty();
+                  for (item in response){
+                      $("#result").append(response[item] + "</br>");
+                  }
                   console.log(response);
               }
       });
@@ -31,16 +34,28 @@
     body{
       color: white;
       background-color: #2f343f;
+
     }
+
     .jumbotron{
       padding: 20px;
+      height: 200px
       color: black;
+      align-self: auto;
+      align-content: center;
     }
     #formDiv{
       background-color: #4682b4;
       margin: auto;
-      max-width: 380px;
+      max-width: 440px;
       padding: 10px;
+    }
+    #result{
+        text-align: center;
+        align-self: center;
+        margin: auto;
+        font-size: 30px;
+        color: black;
     }
   </style>
 
@@ -61,9 +76,10 @@
     </nav>
 
     <div id="intro">
-      <h1><strong>It's finally time to turn your life into a comic.</strong></h1>
-      <h4>It is a known fact that computers make calculations and judgments with out any type of bias. So now its time to for a computer to tell you what is it sees in your life.
-      Upload your pictures and it will be analyzed to determine what is really happening. </h4>
+      <h1><strong>You don't know what happened in these pictures...</strong></h1>
+      <h3>We can tell you. Everyone was always thinking something, but no one knows what. Thanks to the advancements made by Amazon's rekognition api, we can practically read people's minds.
+      well, not exactly. but maybe if we had another 24 hours we could.
+  </h3>
     </div>
 
 
@@ -84,7 +100,7 @@
 
     <div class="jumbotron">
       <center><img id="myImg"></img></center>
-      <label id="result"><label>
+      <center><label id="result"></label</center>
     </div>
 
     <script type="text/javascript">

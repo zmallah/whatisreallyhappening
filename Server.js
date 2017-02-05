@@ -7,6 +7,8 @@ var express = require('express'),
     require("wordnet-db");
     WordPOS = require('wordpos');
     var structures = require('./structures');
+    var faker = require('faker');
+
 
 var final;
 aws.config.update({
@@ -83,6 +85,7 @@ function getFaceProperies(face) {
 
 function createComic(labels, faces, send) {
     var labelList = [];
+
     for (var key in labels) {
         labelList.push(labels[key]["Name"]);
     }
@@ -100,9 +103,10 @@ function createComic(labels, faces, send) {
             }
         }
 
-        var sentenceList = [];
+        var sentenceList = {};
         for (person in faceList){
-            sentenceList[person] = generateSentence(arr, faceList[person]);
+        person = parseInt(person) + 1;
+            sentenceList[person] = "Person "+person+": " + generateSentence(arr, faceList[person]);
         }
         send(sentenceList);
     });
@@ -150,9 +154,9 @@ function generateSentence(wordList, person){
 }
 
 function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+  min = Math.floor(min);
+  max = Math.ceil(max);
+  return Math.floor(Math.random() * (max - min));
 }
 function generateWordList(str, fn){
     wordpos = new WordPOS();
