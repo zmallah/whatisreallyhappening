@@ -1,4 +1,4 @@
-  
+
 
 <!DOCTYPE html>
 <html>
@@ -38,8 +38,8 @@
     #formDiv{
       background-color: #4682b4;
       margin: auto;
-   width: 20%;
-   padding: 10px;
+      max-width: 380px;
+      padding: 10px;
     }
   </style>
 
@@ -82,7 +82,24 @@
     <br/>
 
     <div class="jumbotron" id="result">
-
+      <img id="myImg"></img>
     </div>
+
+    <script type="text/javascript">
+    $(function () {
+    $(":file").change(function () {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = imageIsLoaded;
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+});
+
+function imageIsLoaded(e) {
+    $('#myImg').attr('src', e.target.result);
+};
+    </script>
+
   </body>
 </html>
