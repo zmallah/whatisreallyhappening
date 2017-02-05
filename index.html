@@ -1,20 +1,88 @@
+
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
+
     <title>What is Really Happening!?</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script>//On Submission do this
+    $(document).ready(function() {
+       $('#uploadForm').submit(function() {
+          $(this).ajaxSubmit({
+              success: function(response) {
+                  $("div#result").append(JSON.stringify(response));
+                  console.log(response);
+              }
+      });
+          //Very important line, it disable the page refresh.
+      return false;
+      });
+    });
+</script>
   </head>
+  <style>
+    body{
+      color: white;
+      background-color: #2f343f;
+    }
+    .jumbotron{
+      padding: 20px;
+      color: black;
+    }
+    #formDiv{
+      background-color: #4682b4;
+      margin: auto;
+   width: 20%;
+   padding: 10px;
+    }
+  </style>
+
   <body>
 
-    <form action="http://www.cs.tut.fi/cgi-bin/run/~jkorpela/echo.cgi"enctype="multipart/form-data" method="post">
-      <p>
-        Please specify a file, or a set of files:<br>
-        <input type="file" name="datafile" size="40">
-      </p>
-      <div>
-        <input type="submit" value="Send">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><strong>What is Really Happening</strong></a>
+        </div>
       </div>
-    </form>
+    </nav>
 
+    <div id="intro">
+      <h1><strong>It's finally time to turn your life into a comic.</strong></h1>
+      <h4>It is a known fact that computers make calculations and judgments with out any type of bias. So now its time to for a computer to tell you what is it sees in your life.
+      Upload your pictures and it will be analyzed to determine what is really happening. </h4>
+    </div>
+
+
+    <div id="formDiv" class="alert alert-info">
+      <form enctype="multipart/form-data" method="post" action="/upload" id="uploadForm">
+        <p>
+          <h3><label style="color:white;"> Please select your pictures:</label></h3>
+
+          <input class="btn btn-default" type="file" name="file" id="file">
+        </p>
+        <div class="form-group">
+          <input class="btn btn-default" type="submit" value="Go!">
+        </div>
+      </form>
+    </div>
+
+    <br/>
+
+    <div class="jumbotron" id="result">
+
+    </div>
   </body>
 </html>
