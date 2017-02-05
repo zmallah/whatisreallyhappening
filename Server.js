@@ -3,17 +3,16 @@ var express = require('express'),
     multer = require('multer'),
     fs = require("fs"),
     $ = require('jquery');
-    natural = require("natural");
     require("wordnet-db");
     WordPOS = require('wordpos');
     var structures = require('./structures');
-    var faker = require('faker');
+
 
 
 var final;
 aws.config.update({
-    secretAccessKey: 'vlGsfQS6tgs85RyZ+9mEr8smaIiDzb1KARBxBPhQ',
-    accessKeyId: 'AKIAIPJ5KKIHO2364E2A',
+    secretAccessKey: 'placeholder',
+    accessKeyId: 'placeholder',
     region: 'us-east-1'
 });
 
