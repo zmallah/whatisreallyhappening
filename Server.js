@@ -48,10 +48,11 @@ app.post('/upload', upload.single('file'), function (req, res, next) {
        else     {
            rekognition.detectFaces(paramsFaces, function(err, respFaces) {
               if (err) console.log(err, err.stack); // an error occurred
-              else     res.send(generateSentence(
-                            respLabels["Labels"],
-                            respFaces["FaceDetails"])
-                        );
+              else     createComic(
+                        respLabels["Labels"],
+                        respFaces["FaceDetails"], function(data){
+                            res.send(data);
+                        });
           });
        }
 
@@ -70,7 +71,7 @@ function getFaceProperies(face) {
         }
         if(key == "Emotions"){
             for(emote in key){
-                if (face[key][emote] != null && face[key][emote]["Confidence"] > 85){
+                if (face[key][emote] != null && face[key][emote]["Confidence"] > 70){
                     faceProps.push(face[key][emote]["Type"]);
                 }
             }
@@ -79,7 +80,7 @@ function getFaceProperies(face) {
     return faceProps
 }
 
-function generateSentence(labels, faces) {
+function createComic(labels, faces, send) {
     var labelList = [];
     for (var key in labels) {
         labelList.push(labels[key]["Name"]);
@@ -88,26 +89,27 @@ function generateSentence(labels, faces) {
     for (var face in faces) {
         faceList.push(getFaceProperies(faces[face]));
     }
+    generateWordList(labelList, function(arr){
 
-    var wordList = labelList;
-    for (var key in faceList) {
-        wordList = wordList.concat(faceList[key]);
-    }
-
-    for (person in faceList){
-
-    }
-    part_of_speech(wordList);
+        var sentenceList = [];
+        for (person in faceList){
+            sentenceList[person] = generateSentence(arr, faceList[person]);
+        }
+        send(sentenceList);
+    });
 }
 
-function part_of_speech(str){
+function generateSentence(wordList, person){
+    for (key in person){
+        if (person[key] == "HAPPY"){
+            return "I am happy";
+        }
+    }
+    return "I can't makeup a sentence :(";
+}
+function generateWordList(str, fn){
     wordpos = new WordPOS();
-    temp = null;
-    var posList;
-    pos = wordpos.getPOS(str, function(response){
-        posList = response;
-    });
-    return posList;
+    wordpos.getPOS(str).then(fn);
 }
 
 app.listen(3000, function () {

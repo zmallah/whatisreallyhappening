@@ -1,4 +1,4 @@
-  
+
 
 <!DOCTYPE html>
 <html>
@@ -16,7 +16,7 @@
        $('#uploadForm').submit(function() {
           $(this).ajaxSubmit({
               success: function(response) {
-                  $("div#result").append(JSON.stringify(response));
+                  $("div#result").empty().append(JSON.stringify(response));
                   console.log(response);
               }
       });
