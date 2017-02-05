@@ -3,7 +3,11 @@ var express = require('express'),
     multer = require('multer'),
     fs = require("fs"),
     $ = require('jquery');
+    natural = require("natural");
+    require("wordnet-db");
+    WordPOS = require('wordpos');
 
+var final;
 aws.config.update({
     secretAccessKey: 'vlGsfQS6tgs85RyZ+9mEr8smaIiDzb1KARBxBPhQ',
     accessKeyId: 'AKIAIPJ5KKIHO2364E2A',
@@ -37,15 +41,31 @@ app.post('/upload', upload.single('file'), function (req, res, next) {
    });
 });
 
-function generateSentence(data) {
-    var result = [];
+function generateSentence(data, callback) {
+  if (callback) return data;
+
+    var result = '';
     for (var key in data["Labels"]) {
-            result.push(data["Labels"][key]["Name"]);
+            result = result + data["Labels"][key]["Name"] + " ";
     }
-    console.log(result);
-    return result;
+    part_of_speech(result);
 }
 
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });
+
+function part_of_speech(str){
+  console.log(str);
+  wordpos = new WordPOS();
+  temp = null;
+  var test;
+  wordpos.getPOS(str, function(data){
+    console.log(data);
+    generateSentence(data,true);
+  });
+}
+
+function textReturn(str){
+
+}
