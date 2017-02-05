@@ -23,6 +23,7 @@
           //Very important line, it disable the page refresh.
       return false;
       });
+
     });
 </script>
   </head>
@@ -81,11 +82,13 @@
 
     <br/>
 
-    <div class="jumbotron" id="result">
-      <img id="myImg"></img>
+    <div class="jumbotron">
+      <center><img id="myImg"></img></center>
+      <label id="result"><label>
     </div>
 
     <script type="text/javascript">
+
     $(function () {
     $(":file").change(function () {
         if (this.files && this.files[0]) {
@@ -97,7 +100,10 @@
 });
 
 function imageIsLoaded(e) {
-    $('#myImg').attr('src', e.target.result);
+    $('#myImg').attr('src',e.target.result);
+    $('#myImg').attr('width',510);
+    $('#myImg').attr('height',510);
+
 };
     </script>
 
